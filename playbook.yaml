@@ -1,0 +1,37 @@
+---
+- name: Install Docker
+  hosts: edgex_node
+  become: true
+  pre_tasks:
+    - name: Update packages
+      ansible.builtin.apt:
+        update_cache: true
+  roles:
+    - role: geerlingguy.docker
+      vars:
+        docker_install_compose_plugin: false
+        docker_compose_package: docker-compose-plugin
+        docker_compose_package_state: present
+
+  tasks:
+
+    - name: create working directory
+      ansible.builtin.file:
+        path: /usr/local/edgex-runtime
+        state: directory
+        mode: '755'
+
+    - name: Download docker compose file for edgex runtime
+      ansible.builtin.get_url:
+        url: 'https://raw.githubusercontent.com/edgexfoundry/edgex-compose/v3.1/docker-compose-no-secty.yml'
+        dest: /usr/local/edgex-runtime/docker-compose.yml
+        mode: '644'
+
+    - name: start edgex runtime
+      community.docker.docker_compose_v2:
+        project_src: /usr/local/edgex-runtime
+        state: present
+
+        #- name: Install simulator on the iot devices
+        #  hosts: iot_devices
+        #  tasks:

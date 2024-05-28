@@ -1,0 +1,36 @@
+edgex_node:
+  hosts:
+    edgex_runtime:
+
+iot_nodes:
+  hosts:
+    iot_node_1:
+    iot_node_2:
+    iot_node_3:
+
+all:
+  hosts:
+    edgex_runtime:
+        ansible_user: vagrant
+        ansible_ssh_private_key_file: .vagrant/machines/edgex-runtime/virtualbox/private_key
+        ansible_host: 127.0.0.1
+        ansible_port: 2221
+        ansible_hostname: edgex-runtime
+    iot_node_1:
+        ansible_user: vagrant
+        ansible_ssh_private_key_file: .vagrant/machines/iot-node-1/virtualbox/private_key
+        ansible_host: 127.0.0.1
+        ansible_port: 2222
+        ansible_hostname: iot-node-1
+    iot_node_2:
+        ansible_user: vagrant
+        ansible_ssh_private_key_file: .vagrant/machines/iot-node-2/virtualbox/private_key
+        ansible_host: 127.0.0.1
+        ansible_port: 2223
+        ansible_hostname: iot-node-2
+    iot_node_3:
+        ansible_user: vagrant
+        ansible_ssh_private_key_file: .vagrant/machines/iot-node-3/virtualbox/private_key
+        ansible_host: 127.0.0.1
+        ansible_port: 2224
+        ansible_hostname: iot-node-3
