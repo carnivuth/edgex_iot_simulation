@@ -1,6 +1,9 @@
 Vagrant.configure('2') do |config|
   config.vm.box = 'ubuntu/jammy64'
   config.ssh.insert_key = true
+  config.vm.provider "virtualbox" do |v|  
+    v.linked_clone = true
+  end
 
   # edgex runtime node
   config.vm.define 'edgex-runtime' do |machine|
