@@ -1,8 +1,11 @@
 Vagrant.configure('2') do |config|
   config.vm.box = 'ubuntu/jammy64'
   config.ssh.insert_key = true
+
   config.vm.provider "virtualbox" do |v|  
     v.linked_clone = true
+    v.memory = 6144
+    v.cpus = 4
   end
 
   # edgex runtime node
@@ -21,7 +24,7 @@ Vagrant.configure('2') do |config|
     machine.vm.network 'forwarded_port', host: 59720, guest: 59720, protocol: "tcp"
     machine.vm.network 'forwarded_port', host: 6379,  guest: 6379, protocol: "tcp"
     machine.vm.network 'forwarded_port', host: 8500,  guest: 8500, protocol: "tcp"
-    machine.vm.network 'private_network', virtualbox__intnet: 'ceph-cluster', ip: '192.168.0.10'
+    machine.vm.network 'private_network', virtualbox__intnet: 'ceph-cluster', ip: '10.0.0.10'
     machine.vm.disk :disk, name: 'storage-1', size: '10GB'
   end
   
@@ -43,19 +46,19 @@ Vagrant.configure('2') do |config|
   config.vm.define 'iot-node-1' do |machine|
     machine.vm.hostname = 'iot-node-1'
     machine.vm.network 'forwarded_port', id: 'ssh', host: 2222, guest: 22
-    machine.vm.network 'private_network', virtualbox__intnet: 'ceph-cluster', ip: '192.168.0.20'
+    machine.vm.network 'private_network', virtualbox__intnet: 'ceph-cluster', ip: '10.0.0.20'
     machine.vm.disk :disk, name: 'storage-2', size: '10GB'
   end
   config.vm.define 'iot-node-2' do |machine|
     machine.vm.hostname = 'iot-node-2'
     machine.vm.network 'forwarded_port', id: 'ssh', host: 2223, guest: 22
-    machine.vm.network 'private_network', virtualbox__intnet: 'ceph-cluster', ip: '192.168.0.30'
+    machine.vm.network 'private_network', virtualbox__intnet: 'ceph-cluster', ip: '10.0.0.30'
     machine.vm.disk :disk, name: 'storage-3', size: '10GB'
   end
   config.vm.define 'iot-node-3' do |machine|
     machine.vm.hostname = 'iot-node-3'
     machine.vm.network 'forwarded_port', id: 'ssh', host: 2224, guest: 22
-    machine.vm.network 'private_network', virtualbox__intnet: 'ceph-cluster', ip: '192.168.0.40'
+    machine.vm.network 'private_network', virtualbox__intnet: 'ceph-cluster', ip: '10.0.0.40'
     machine.vm.disk :disk, name: 'storage-4', size: '10GB'
   end
 end
