@@ -1,15 +1,35 @@
 # EDGEX IOT SIMULATION
 
-Objective create infrastructure with edge runtime  and nodes that generate data and send it to the edge runtime
+edgex cluster simulation with snmp devices as linux servers
 
-## STEPS
+## INSTALLATION
 
 - install vagrant
 
 - create python venv and install dependencies
 
+```bash
+cd edgex_iot_simulation
+python -m venv env 
+source env/bin/activate
+pip install -r requirements.txt
+```
+
+- install geerlingguy.docker role
+
+```bash
+source env/bin/activate
+ansible-galaxy role install geeringguy.docker
+```
+
 - start cluster
 
-- install geerlingguydocker role
+```bash
+vagrant up
+```
 
-- run ansible
+- provision the cluster
+
+```bash
+ansible-playbook -i inventory.yaml playbook.yaml
+```
