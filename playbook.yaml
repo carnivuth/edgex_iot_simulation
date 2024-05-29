@@ -1,4 +1,5 @@
 ---
+# EDGEX NODE
 - name: Install Docker
   hosts: edgex_node
   become: true
@@ -22,8 +23,8 @@
         mode: '755'
 
     - name: Download docker compose file for edgex runtime
-      ansible.builtin.get_url:
-        url: 'https://raw.githubusercontent.com/edgexfoundry/edgex-compose/v3.1/docker-compose-no-secty.yml'
+      ansible.builtin.copy:
+        src: docker-compose.yml
         dest: /usr/local/edgex-runtime/docker-compose.yml
         mode: '644'
 
@@ -32,6 +33,26 @@
         project_src: /usr/local/edgex-runtime
         state: present
 
-        #- name: Install simulator on the iot devices
-        #  hosts: iot_devices
-        #  tasks:
+ # IOT DEVICES
+- name: Provision iot devices
+  hosts: iot_nodes
+  become: true
+  tasks:
+
+    - name: Install snmp agent
+      ansible.builtin.apt:
+        name: snmpd
+        state: present
+        update_cache: true
+
+    - name: enable agent on all interfaces
+      ansible.builtin.lineinfile:
+        path: /etc/snmp/snmpd.conf
+        regex: 'agentaddress  .*'
+        line: 'agentaddress  127.0.0.1,[::1]'
+        state: present
+
+    - name: Restart snmp agent
+      ansible.builtin.service:
+        name: snmpd
+        state: restarted
