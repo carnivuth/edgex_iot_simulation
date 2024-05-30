@@ -1,9 +1,0 @@
-name: "UptimeState"
-  isHidden: false
-  description: "uptime of the device"
-  attributes:
-    { oid: "1.3.6.1.2.1.1.3", community: "public" }
-  properties:
-    valueType:  "String"
-    readWrite: "R"
-    defaultValue: "1"

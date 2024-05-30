@@ -1,0 +1,15 @@
+name: linuxServer
+manufacturer: linux
+description: server linux trough snmp
+model: linux
+labels: [linux, server]
+deviceResources:
+    - description: uptime
+      name: uptime
+      isHidden: false
+      properties:
+        valueType: String
+        readWrite: R
+      attributes:
+        community: public
+        oid: 1.3.6.1.2.1.1.3
