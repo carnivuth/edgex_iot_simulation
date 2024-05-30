@@ -40,8 +40,6 @@
       loop: "{{ query('fileglob', 'edgex_metadata/*') }}"
 
     - name: Add edgex metadata
-    #delegate_to: localhost
-    #become: false
       ansible.builtin.command:
         cmd: >
           curl -X "POST" "http://localhost:59881/api/v3/deviceprofile/uploadfile"
@@ -65,7 +63,7 @@
       ansible.builtin.lineinfile:
         path: /etc/snmp/snmpd.conf
         regex: 'agentaddress  .*'
-        line: 'agentaddress  127.0.0.1,[::1]'
+        line: 'agentaddress  0.0.0.0,[::1]'
         state: present
 
     - name: Restart snmp agent
