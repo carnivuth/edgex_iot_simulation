@@ -1,0 +1,30 @@
+[
+  {
+    "apiVersion": "v3",
+    "device": {
+      "name": "{{ name | replace('-','') }}",
+      "description": "iot node 1",
+      "adminState": "UNLOCKED",
+      "operatingState": "UP",
+      "labels": [
+        "server linux"
+      ],
+      "serviceName": "device-snmp",
+      "profileName": "linuxServer",
+      "protocols": {
+        "UDP": {
+          "Address": "{{ address }}",
+          "Port": "161"
+        }
+      },
+      "AutoEvents": [
+        {
+          "Interval": "10s",
+          "OnChange": true,
+          "SourceName": "uptime"
+        }
+        
+      ]
+    }
+  }
+]
