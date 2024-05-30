@@ -4,7 +4,7 @@ edgex cluster simulation with snmp devices as linux servers
 
 ## INSTALLATION
 
-- install vagrant
+- install vagrant and virtualbox
 
 - create python venv and install dependencies
 
