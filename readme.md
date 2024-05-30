@@ -17,7 +17,7 @@ A --snmp queries--> B & C & D
 
 ## INSTALLATION
 
-- install vagrant and virtualbox
+- install [vagrant](https://www.vagrantup.com/) and [virtualbox](https://www.virtualbox.org/)
 
 - create python venv and install dependencies
 
@@ -41,8 +41,14 @@ ansible-galaxy role install geeringguy.docker
 vagrant up
 ```
 
-- provision the cluster
+- run the preflight.yml playbook, this will install the edgex runtime and push device profile metadata on the edgex gateway and enable snmpd on iot nodes
 
 ```bash
-ansible-playbook -i inventory.yaml playbook.yaml
+ansible-playbook -i inventory.yml preflight.yml
+```
+
+- run the devices_setup.yml playbook, this will push device configuration on the edgex edge node
+
+```bash
+ansible-playbook -i inventory.yml devices_setup.yml
 ```
