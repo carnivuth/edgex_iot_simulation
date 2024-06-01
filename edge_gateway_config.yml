@@ -1,10 +1,27 @@
----
-# EDGEX NODE
-- name: Add devices in edgex node metadata
+- name: Configure metadata on edge runtime
   hosts: edgex_node
   become: true
   tasks:
+    # device profile metadata
+    - name: Copy device profile files
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: /usr/local/edgex-runtime
+      loop: "{{ query('fileglob', 'edgex_metadata/*') }}"
 
+    - name: Add device profiles metadata
+      ansible.builtin.command:
+        cmd: >
+          curl -X "POST" "http://localhost:59881/api/v3/deviceprofile/uploadfile"
+          --form file='@"/usr/local/edgex-runtime/{{ item | basename }}"'
+      loop: "{{ query('fileglob', 'edgex_metadata/*') }}"
+      register: result
+      changed_when:
+        - '"201" in result.stdout '
+      failed_when:
+        - '"201" not in result.stdout and "409" not in result.stdout'
+
+    # device metadata
     - name: Copy device files
       ansible.builtin.template:
           src: '{{ item[1] }}'
@@ -22,14 +39,14 @@
       loop: "{{ groups['iot_nodes'] | product(query('fileglob', 'device_templates/*'))}}"
       register: files
 
-    - name: Add edgex metadata
+    - name: Add device metadata
       ansible.builtin.command:
         cmd: >
           curl -X "POST" "http://localhost:59881/api/v3/device"
           -d '{{ item.content | b64decode | regex_replace( '\n','' )}}'
       loop: "{{ files.results }}"
       register: results
-
-    - name: Print
-      debug:
-        var: results
+      changed_when:
+        - '"201" in results.stdout '
+      failed_when:
+        - '"201" not in results.stdout and "409" not in results.stdout'

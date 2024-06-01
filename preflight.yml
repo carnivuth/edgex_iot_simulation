@@ -32,21 +32,9 @@
       community.docker.docker_compose_v2:
         project_src: /usr/local/edgex-runtime
         state: present
-
-    - name: Copy metadata files
-      ansible.builtin.copy:
-        src: '{{ item }}'
-        dest: /usr/local/edgex-runtime
-      loop: "{{ query('fileglob', 'edgex_metadata/*') }}"
-
-    - name: Add edgex metadata
-      ansible.builtin.command:
-        cmd: >
-          curl -X "POST" "http://localhost:59881/api/v3/deviceprofile/uploadfile"
-          --form file='@"/usr/local/edgex-runtime/{{ item | basename }}"'
-      loop: "{{ query('fileglob', 'edgex_metadata/*') }}"
       register: result
-
+      retries: 5
+      delay: 10
  # IOT DEVICES
 - name: Provision iot devices
   hosts: iot_nodes

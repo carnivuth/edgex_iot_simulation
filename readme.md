@@ -8,7 +8,10 @@ The idea is to simulate a network environment with a node acting as a edgex gate
 
 ```mermaid
 flowchart TD
-A[edgex gateway]
+subgraph edgex_gateway
+A[snmp-device]
+E[edgex runtime]
+end
 B[iot node 1]
 C[iot node 2]
 D[iot node 3]
@@ -47,8 +50,8 @@ vagrant up
 ansible-playbook -i inventory.yml preflight.yml
 ```
 
-- run the devices_setup.yml playbook, this will push device configuration on the edgex edge node
+- run the `edge_gateway_config.yml` playbook, this will push device profiles and device configuration on the edgex gateway node
 
 ```bash
-ansible-playbook -i inventory.yml devices_setup.yml
+ansible-playbook -i inventory.yml edge_gateway_config.yml
 ```
