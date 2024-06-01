@@ -3,7 +3,7 @@
     "apiVersion": "v3",
     "device": {
       "name": "{{ name | replace('-','') }}",
-      "description": "iot node 1",
+      "description": "{{ name | replace('-','') }}",
       "adminState": "UNLOCKED",
       "operatingState": "UP",
       "labels": [
@@ -12,7 +12,7 @@
       "serviceName": "device-snmp",
       "profileName": "linuxServer",
       "protocols": {
-        "UDP": {
+        "TCP": {
           "Address": "{{ address }}",
           "Port": "161"
         }
