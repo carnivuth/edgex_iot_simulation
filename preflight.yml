@@ -16,7 +16,19 @@
 
   tasks:
 
-    - name: create working directory
+    - name: Create working directory
+      ansible.builtin.file:
+        path: /usr/local/edgex-runtime/device-snmp/devices
+        state: directory
+        mode: '755'
+
+    - name: Create working directory
+      ansible.builtin.file:
+        path: /usr/local/edgex-runtime/device-snmp/device-profiles
+        state: directory
+        mode: '755'
+
+    - name: Create working directory
       ansible.builtin.file:
         path: /usr/local/edgex-runtime
         state: directory
@@ -26,15 +38,32 @@
       ansible.builtin.copy:
         src: docker-compose.yml
         dest: /usr/local/edgex-runtime/docker-compose.yml
-        mode: '644'
+
+    - name: Copy device profile files
+      ansible.builtin.copy:
+        src: '{{ item }}'
+        dest: /usr/local/edgex-runtime/device-snmp/device-profiles/
+      loop: "{{ query('fileglob', 'edgex_metadata/*') }}"
+
+    - name: Copy device files
+      ansible.builtin.template:
+          src: '{{ item[1] }}'
+          dest: '/usr/local/edgex-runtime/device-snmp/devices/{{ name }}.yml'
+          mode: '644'
+      vars:
+        address: "{{ hostvars[item[0]].internal_address }}"
+        name: "{{ hostvars[item[0]].ansible_hostname }}"
+      loop: "{{ groups['iot_nodes'] | product(query('fileglob', 'device_templates/*'))}}"
+
 
     - name: start edgex runtime
       community.docker.docker_compose_v2:
         project_src: /usr/local/edgex-runtime
-        state: present
+        state: restarted
       register: result
       retries: 5
       delay: 10
+
  # IOT DEVICES
 - name: Provision iot devices
   hosts: iot_nodes
