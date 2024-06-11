@@ -4,7 +4,7 @@ deviceList:
     description: "{{ name | replace('-','') }}"
     labels: [ "iot" ]
     protocols:
-      other:
+      TCP:
         Address: "{{ address }}"
         Port: "161"
         Community: "public"
