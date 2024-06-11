@@ -49,9 +49,3 @@ vagrant up
 ```bash
 ansible-playbook -i inventory.yml preflight.yml
 ```
-
-- run the `edge_gateway_config.yml` playbook, this will push device profiles and device configuration on the edgex gateway node
-
-```bash
-ansible-playbook -i inventory.yml edge_gateway_config.yml
-```
