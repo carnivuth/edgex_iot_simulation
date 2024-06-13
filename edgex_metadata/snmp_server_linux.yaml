@@ -11,5 +11,14 @@ deviceResources:
         valueType: String
         readWrite: R
       attributes:
-        community: public
+        community: private
         oid: 1.3.6.1.2.1.1.3.0
+    - description: hostname
+      name: hostname
+      isHidden: false
+      properties:
+        valueType: String
+        readWrite: R
+      attributes:
+        community: private
+        oid: 1.3.6.1.2.1.1.5.0
