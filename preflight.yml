@@ -4,6 +4,17 @@
   hosts: edgex_node
   become: true
   pre_tasks:
+
+    - name: Fails if no telegram token is defined
+      fail:
+        msg: telegram_token is not defined
+      when: telegram_token is not defined
+
+    - name: Fails if no telegram channel_id is defined
+      fail:
+        msg: telegram_channel_id is not defined
+      when: telegram_channel_id is not defined
+
     - name: Update packages
       ansible.builtin.apt:
         update_cache: true
@@ -35,8 +46,8 @@
         mode: '755'
 
     - name: Download docker compose file for edgex runtime
-      ansible.builtin.copy:
-        src: docker-compose.yml
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
         dest: /usr/local/edgex-runtime/docker-compose.yml
 
     - name: Copy device profile files
@@ -56,13 +67,26 @@
       loop: "{{ groups['iot_nodes'] | product(query('fileglob', 'device_templates/*'))}}"
 
 
+    - name: Install monitoring application
+      ansible.builtin.copy:
+        src: monitor
+        dest: /usr/local/
+
+    - name: Build docker image
+      community.docker.docker_image_build:
+        name: monitor:latest
+        path: /usr/local/monitor
+        dockerfile: Dockerfile
+        rebuild: always
+
     - name: start edgex runtime
       community.docker.docker_compose_v2:
         project_src: /usr/local/edgex-runtime
-        state: restarted
+        state: present
       register: result
       retries: 5
       delay: 10
+
 
  # IOT DEVICES
 - name: Provision iot devices
@@ -77,11 +101,11 @@
         update_cache: true
 
     - name: enable agent on all interfaces
-      ansible.builtin.lineinfile:
-        path: /etc/snmp/snmpd.conf
-        regex: 'agentaddress  .*'
-        line: 'agentaddress  0.0.0.0,[::1]'
-        state: present
+      ansible.builtin.template:
+        src: snmpd.conf.j2
+        dest: /etc/snmp/snmpd.conf
+      vars:
+        name: "{{ ansible_hostname }}"
 
     - name: Restart snmp agent
       ansible.builtin.service:

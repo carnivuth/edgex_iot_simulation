@@ -19,7 +19,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        host_ip: 127.0.0.1
         target: 59701
         published: "59701"
         protocol: tcp
@@ -50,7 +49,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        #host_ip: 127.0.0.1
         target: 8500
         published: "8500"
         protocol: tcp
@@ -90,7 +88,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        host_ip: 127.0.0.1
         target: 59882
         published: "59882"
         protocol: tcp
@@ -155,7 +152,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        host_ip: 127.0.0.1
         target: 59880
         published: "59880"
         protocol: tcp
@@ -189,7 +185,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        host_ip: 127.0.0.1
         target: 59881
         published: "59881"
         protocol: tcp
@@ -213,7 +208,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        host_ip: 127.0.0.1
         target: 6379
         published: "6379"
         protocol: tcp
@@ -248,7 +242,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        host_ip: 127.0.0.1
         target: 59993
         published: "59993"
         protocol: tcp
@@ -294,7 +287,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        host_ip: 127.0.0.1
         target: 59720
         published: "59720"
         protocol: tcp
@@ -344,7 +336,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        host_ip: 127.0.0.1
         target: 59860
         published: "59860"
         protocol: tcp
@@ -380,7 +371,6 @@ services:
       edgex-network: null
     ports:
       - mode: ingress
-        host_ip: 127.0.0.1
         target: 59861
         published: "59861"
         protocol: tcp
@@ -422,6 +412,22 @@ services:
         read_only: true
         bind:
           create_host_path: true
+  monitor:
+    container_name: monitor
+    depends_on:
+      core-data:
+        condition: service_started
+        required: true
+    environment:
+      MONITOR_SERVER: "edgex-core-data"
+      MONITOR_TELEGRAM_TOKEN: "{{ telegram_token }}"
+      MONITOR_TELEGRAM_CHANNEL_ID: "{{ telegram_channel_id }}"
+    hostname: monitor
+    image: monitor:latest
+    networks:
+      edgex-network: null
+    restart: always
+
 networks:
   edgex-network:
     name: edgex_edgex-network
