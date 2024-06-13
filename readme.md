@@ -20,11 +20,9 @@ end
 subgraph iot_network
 direction LR
 B[iot node 1]
-C[iot node 2]
-D[iot node 3]
-B ~~~ C ~~~ D
+B
 end
-A --snmp queries--> B & C & D
+A --snmp queries--> B
 ```
 
 ## INSTALLATION
@@ -57,8 +55,25 @@ vagrant up
 
 
 ```bash
-ansible-playbook -i inventory.yml preflight.yml
+ansible-playbook -i inventory.yml preflight.yml -e 'telegram_token=<INSERT_TOKEN>' -e 'telegram_channel_id=<INSERT_CHANNEL_ID>'
 ```
+
+- in order to test the application simply restart the iot node
+
+```bash
+vagrant reload iot-node-1
+```
+
+- and then inspect logs on the edgex-runtime node
+
+```bash
+cd /usr/local/edgex-runtime
+docker compose logs monitor
+``` 
+
+## RESULTS
+
+![](./img/result.jpg)
 
 ### PREFLIGHT
 

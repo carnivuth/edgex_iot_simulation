@@ -33,14 +33,4 @@ Vagrant.configure('2') do |config|
     machine.vm.network 'forwarded_port', id: 'ssh', host: 2222, guest: 22
     machine.vm.network 'private_network', virtualbox__intnet: 'edgex-cluster', ip: '10.0.0.20'
   end
-  config.vm.define 'iot-node-2' do |machine|
-    machine.vm.hostname = 'iot-node-2'
-    machine.vm.network 'forwarded_port', id: 'ssh', host: 2223, guest: 22
-    machine.vm.network 'private_network', virtualbox__intnet: 'edgex-cluster', ip: '10.0.0.30'
-  end
-  config.vm.define 'iot-node-3' do |machine|
-    machine.vm.hostname = 'iot-node-3'
-    machine.vm.network 'forwarded_port', id: 'ssh', host: 2224, guest: 22
-    machine.vm.network 'private_network', virtualbox__intnet: 'edgex-cluster', ip: '10.0.0.40'
-  end
 end
