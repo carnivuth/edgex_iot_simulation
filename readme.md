@@ -92,3 +92,15 @@ the API will reply with a json with the chat id information
 
 Monitor application is a simple python script that fetches the data from the edgex-core microservice and send a telegram message to the configured channel id,
 it's deployed exploiting the edgex compose file
+
+```mermaid
+flowchart TD
+subgraph monitor
+A[monitor.py]
+end
+B[edgex_core_data]
+C[(telegram_api)]
+A --pull information from-->B
+A --notify trough-->C
+
+```
