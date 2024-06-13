@@ -4,17 +4,26 @@ edgex cluster simulation with snmp devices as linux servers
 
 ## ARCHITECTURE
 
-The idea is to simulate a network environment with a node acting as a edgex gateway pulling information (*uptime in this example*) from snmp capable iot nodes 
+The idea is to simulate a network environment with a node acting as a edgex gateway pulling information (*uptime in this example*) from snmp capable iot nodes, the uptime data stream is used by a external developed application (*monitor*) that uses the informations to notify that a node has been rebooted trough telegram messages
 
 ```mermaid
 flowchart TD
 subgraph edgex_gateway
+direction TB
+F[monitor]
 A[snmp-device]
+G[core-data]
 E[edgex runtime]
+A --send events to--> G
+F --reads from--> G
 end
+subgraph iot_network
+direction LR
 B[iot node 1]
 C[iot node 2]
 D[iot node 3]
+B ~~~ C ~~~ D
+end
 A --snmp queries--> B & C & D
 ```
 
@@ -44,8 +53,27 @@ ansible-galaxy role install geeringguy.docker
 vagrant up
 ```
 
-- run the preflight.yml playbook, this will install the edgex runtime and push device profile metadata on the edgex gateway and enable snmpd on iot nodes
+- run the preflight.yml playbook
+
 
 ```bash
 ansible-playbook -i inventory.yml preflight.yml
 ```
+
+### PREFLIGHT
+
+in order to run the playbook telegram configuration parameter are neded to start the monitoring application 
+
+telegram_token: token of the bot given from [botfather](https://telegram.me/BotFather)
+telegram_channel_id: channel_id where to route reboot notification from the monitor app, this can be obtained by 
+
+-  sending a message to the bot
+-  connecting to the url `https://api.telegram.org/bot<bot-token>/getUpdates`
+
+the API will reply with a json with the chat id information
+
+
+### MONITOR
+
+Monitor application is a simple python script that fetches the data from the edgex-core microservice and send a telegram message to the configured channel id,
+it's deployed exploiting the edgex compose file
